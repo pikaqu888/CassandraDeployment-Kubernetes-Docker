@@ -47,7 +47,7 @@ services:
     image: cassandra
     environment:
       - "CASSANDRA_DC=DC2"
-      - "CASSANDRA_SEEDS=cassandra-seed-DC1"
+     # - "CASSANDRA_SEEDS=cassandra-seed-DC1"
       - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
     restart: always
     
