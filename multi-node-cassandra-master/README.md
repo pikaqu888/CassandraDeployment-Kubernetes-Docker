@@ -38,3 +38,4 @@ kubectl get svc
 ```
 kubectl exec -it cassandra-cluster-spain-0 -- nodetool status
 ```
+![Alt text](/Users/zhongtianlin/Desktop/Picture1.png)
