@@ -1,0 +1,76 @@
+version: '2'
+
+services:
+# 3 nodes datacenter1
+  cassandra-seed-DC1:
+    container_name: cassandra-seed-DC1
+    image: cassandra
+    environment:
+      - "CASSANDRA_DC=DC1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+    ports:
+      - "9042:9042"   # Native transport
+      - "7199:7199"   # JMX
+      - "9160:9160"   # Thrift clients
+      - "7000:7000"
+    restart: always
+
+  cassandra-node-1-DC1:
+    container_name: cassandra-node-1-DC1
+    image: cassandra
+    #command: /bin/bash -c "sleep 10 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
+    environment:
+      - "CASSANDRA_SEEDS=cassandra-seed-DC1"
+      - "CASSANDRA_DC=DC1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+    depends_on:
+      - "cassandra-seed-DC1"
+    restart: always
+
+  # you cannot have multiple nodes join the datacenter at the same time when
+  # cassandra.consistent.rangemovement is true so we further delay it to give it time to stabilize
+  cassandra-node-2-DC1:
+    container_name: cassandra-node-2-DC1
+    image: cassandra
+    command: /bin/bash -c "sleep 20 && echo ' -- Pausing to let system catch up ... -->' && /docker-entrypoint.sh cassandra -f"
+    environment:
+      - "CASSANDRA_SEEDS=cassandra-seed-DC1"
+      - "CASSANDRA_DC=DC1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+    depends_on:
+      - "cassandra-node-1-DC1"
+    restart: always
+    
+    # 3 nodes datacenter2
+  cassandra-seed-DC2:
+    container_name: cassandra-seed-DC2
+    image: cassandra
+    environment:
+      - "CASSANDRA_DC=DC2"
+     # - "CASSANDRA_SEEDS=cassandra-seed-DC1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+    restart: always
+    
+  cassandra-node-1-DC2:
+    container_name: cassandra-node-1-DC2
+    image: cassandra
+    environment:
+      - "CASSANDRA_DC=DC2"
+      - "CASSANDRA_SEEDS=cassandra-seed-DC2"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+    depends_on:
+      - "cassandra-seed-DC2"
+    restart: always
+
+  # you cannot have multiple nodes join the datacenter at the same time when
+  # cassandra.consistent.rangemovement is true so we further delay it to give it time to stabilize
+  cassandra-node-2-DC2:
+    container_name: cassandra-node-2-DC2
+    image: cassandra
+    environment:
+      - "CASSANDRA_SEEDS=cassandra-seed-DC2"
+      - "CASSANDRA_DC=DC2"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+    depends_on:
+      - "cassandra-node-1-DC2"
+    restart: always
