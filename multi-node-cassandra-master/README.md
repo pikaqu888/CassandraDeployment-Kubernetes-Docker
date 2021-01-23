@@ -2,7 +2,7 @@
 
 ## For each datacenter we will require 2 services, first one for managing internal Cassandra load balancer and other for exposing external IP
 
-`kubectl get nodes`
+```kubectl get nodes```
 `kubectl label nodes aks-cassnode-25220521-vmss000000 dc=DC1`
 `kubectl label nodes aks-cassnode-25220521-vmss000001 dc=DC2`
 `kubectl apply -f persistentVolumeClaimDisk.yaml`
