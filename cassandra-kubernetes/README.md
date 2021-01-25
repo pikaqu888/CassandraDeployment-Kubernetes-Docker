@@ -35,6 +35,15 @@ kubectl get pods -o wide
 ```
 kubectl get svc
 ```
+
+For auto-scalation, we will add a cassandra-hpa.yaml file, in this example will auto scale based on CPU usage, the target CPU utilization is to 70%.
+
+```
+kubectl apply -f cassandra-hpa.yaml
+```
+```
+kubectl get hpa
+```
 ```
 kubectl exec -it cassandra-cluster-spain-0 -- nodetool status
 ```
