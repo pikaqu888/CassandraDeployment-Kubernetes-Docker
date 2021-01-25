@@ -39,6 +39,11 @@ spec:
               name: jmx
             - containerPort: 9042
               name: cql
+          resources:
+            limits:
+              cpu: 800m
+            requests:
+              cpu: 500m
           lifecycle:
             preStop:
               exec:
